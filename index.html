@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piyush Kadam — Finance Professional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root{--dk:#1e2118;--dk2:#252a20;--ow:#f4f4ed;--cr:#ebeee0;--lm:#d2ff00;--lm2:rgba(210,255,0,.12);}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{overflow-x:hidden;scroll-behavior:auto;}
+body{background:var(--dk);color:var(--ow);font-family:'DM Sans',sans-serif;font-weight:300;overflow-x:hidden;cursor:none;}
+/* PRELOADER */
+#preloader{position:fixed;inset:0;z-index:9000;background:var(--dk);display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.pre-num{font-family:'Bebas Neue',sans-serif;font-size:clamp(100px,20vw,240px);color:var(--ow);line-height:1;}
+.pre-bar-wrap{width:200px;height:1px;background:rgba(244,244,237,.15);margin-top:24px;overflow:hidden;}
+.pre-bar{width:0%;height:100%;background:var(--lm);}
+.pre-name{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.42em;color:rgba(244,244,237,.28);margin-top:20px;}
+/* CURSOR */
+.cur{width:10px;height:10px;background:var(--lm);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:8999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+.cur-ring{width:44px;height:44px;border:1.5px solid rgba(210,255,0,.45);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:8998;transform:translate(-50%,-50%);transition:width .3s,height .3s,border-color .3s;}
+.cur-ring.big{width:70px;height:70px;border-color:rgba(210,255,0,.7);}
+/* PROGRESS */
+.prog{position:fixed;top:0;left:0;height:2px;background:var(--lm);z-index:9001;width:0;box-shadow:0 0 8px var(--lm);}
+/* BG SVG */
+.bg-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+/* NAV OVERLAY */
+.nav-overlay{position:fixed;inset:0;z-index:700;background:var(--dk2);clip-path:inset(0 0 100% 0);transition:clip-path .75s cubic-bezier(.77,0,.175,1);pointer-events:none;display:flex;align-items:center;padding:0 80px;}
+.nav-overlay.open{clip-path:inset(0 0 0% 0);pointer-events:auto;}
+.ov-bg-svg{position:absolute;inset:0;width:100%;height:100%;opacity:.1;pointer-events:none;}
+.ov-links{list-style:none;}
+.ov-links li{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,108px);line-height:.9;overflow:hidden;}
+.ov-links li a{display:block;color:rgba(244,244,237,.18);text-decoration:none;transform:translateY(115%);transition:transform .7s cubic-bezier(.77,0,.175,1),color .3s;}
+.nav-overlay.open .ov-links li:nth-child(1) a{transform:translateY(0);transition-delay:.04s;}
+.nav-overlay.open .ov-links li:nth-child(2) a{transform:translateY(0);transition-delay:.09s;}
+.nav-overlay.open .ov-links li:nth-child(3) a{transform:translateY(0);transition-delay:.14s;}
+.nav-overlay.open .ov-links li:nth-child(4) a{transform:translateY(0);transition-delay:.19s;}
+.nav-overlay.open .ov-links li:nth-child(5) a{transform:translateY(0);transition-delay:.24s;}
+.ov-links li a:hover{color:var(--ow);}
+.ov-links li a em{color:var(--lm);font-style:normal;}
+.ov-meta{position:absolute;right:80px;bottom:60px;font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(244,244,237,.3);line-height:2.4;}
+.ov-meta a{display:block;color:inherit;text-decoration:none;transition:color .3s;}
+.ov-meta a:hover{color:var(--lm);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;display:flex;justify-content:space-between;align-items:center;padding:22px 48px;transition:background .4s,padding .4s;}
+nav.bg{background:rgba(30,33,24,.95);backdrop-filter:blur(14px);padding:14px 48px;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.06em;color:var(--ow);text-decoration:none;line-height:1;}
+.nav-logo span{display:block;}
+.nav-r{display:flex;gap:10px;align-items:center;}
+.pill-btn{padding:10px 22px;background:var(--lm);color:var(--dk);font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border:none;cursor:none;position:relative;overflow:hidden;}
+.pill-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.2);transform:translateX(-110%) skewX(-15deg);transition:transform .45s;}
+.pill-btn:hover::after{transform:translateX(110%) skewX(-15deg);}
+.pill-btn:hover{background:#c4ee00;}
+.ham{width:48px;height:48px;border:1.5px solid rgba(244,244,237,.15);background:none;cursor:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .3s;}
+.ham:hover{border-color:rgba(210,255,0,.5);}
+.hl{width:20px;height:1.5px;background:var(--ow);transform-origin:center;transition:.35s;}
+.ham.open .hl:nth-child(1){transform:rotate(45deg) translate(3.5px,3.5px);}
+.ham.open .hl:nth-child(2){opacity:0;transform:scaleX(0);}
+.ham.open .hl:nth-child(3){transform:rotate(-45deg) translate(3.5px,-3.5px);}
+/* MARQUEE */
+.mq-wrap{overflow:hidden;white-space:nowrap;border-top:1px solid rgba(244,244,237,.07);border-bottom:1px solid rgba(244,244,237,.07);padding:13px 0;background:rgba(255,255,255,.015);}
+.mq-wrap.light{background:var(--cr);border-color:rgba(30,33,24,.1);}
+.mq-track{display:inline-flex;animation:mq 28s linear infinite;}
+.mq-wrap.light .mq-track{animation-direction:reverse;animation-duration:22s;}
+.mq-item{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:.28em;padding:0 36px;color:rgba(244,244,237,.3);border-right:1px solid rgba(244,244,237,.07);}
+.mq-wrap.light .mq-item{color:rgba(30,33,24,.35);border-right-color:rgba(30,33,24,.1);}
+.mq-item.on{color:var(--lm);}
+.mq-wrap.light .mq-item.on{color:var(--dk);}
+@keyframes mq{to{transform:translateX(-50%);}}
+/* HERO */
+#hero{position:relative;height:100vh;min-height:700px;display:flex;align-items:center;overflow:hidden;}
+.hero-inner{position:relative;z-index:2;padding:0 60px;padding-top:90px;width:100%;}
+.split-line{overflow:hidden;display:block;}
+.split-inner{display:inline-block;transform:translateY(108%);}
+.hero-eyebrow{font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:rgba(244,244,237,.38);margin-bottom:22px;overflow:hidden;}
+.hero-eyebrow span{display:inline-block;transform:translateY(100%);animation:sup .9s .3s cubic-bezier(.77,0,.175,1) forwards;}
+@keyframes sup{to{transform:translateY(0);}}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(88px,14vw,210px);line-height:.86;letter-spacing:.01em;}
+.hero-h1 .accent{color:var(--lm);}
+.hero-tagline{margin-top:28px;font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(16px,1.8vw,24px);color:rgba(244,244,237,.45);}
+.hero-bio{max-width:480px;margin-top:22px;font-size:.78rem;line-height:1.95;color:rgba(244,244,237,.48);opacity:0;}
+.hero-cta{display:flex;gap:12px;margin-top:38px;opacity:0;}
+.mag-btn{display:inline-flex;align-items:center;padding:13px 30px;font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;text-decoration:none;border:none;cursor:none;position:relative;overflow:hidden;transition:transform .1s;}
+.mag-btn.primary{background:var(--lm);color:var(--dk);}
+.mag-btn.ghost{border:1.5px solid rgba(244,244,237,.22);color:var(--ow);background:transparent;}
+.mag-btn.ghost:hover{border-color:var(--lm);background:var(--lm2);}
+.mag-btn.primary::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.2);transform:translateX(-110%) skewX(-15deg);transition:transform .45s;}
+.mag-btn.primary:hover::after{transform:translateX(110%) skewX(-15deg);}
+.hero-stats{position:absolute;right:60px;bottom:80px;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:2px;opacity:0;}
+.s-box{background:rgba(244,244,237,.03);border:1px solid rgba(244,244,237,.07);padding:22px 26px;min-width:138px;}
+.s-n{font-family:'Bebas Neue',sans-serif;font-size:46px;color:var(--lm);line-height:1;}
+.s-l{font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,244,237,.32);margin-top:4px;}
+.scroll-hint{position:absolute;bottom:32px;left:60px;z-index:2;display:flex;align-items:center;gap:14px;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(244,244,237,.22);opacity:0;}
+.s-line{width:50px;height:1px;background:rgba(244,244,237,.12);overflow:hidden;position:relative;}
+.s-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;background:var(--lm);animation:sl 2.2s 2.5s infinite;}
+@keyframes sl{to{left:100%;}}
+/* PINNED TEXT */
+#pin-text{position:relative;}
+.pin-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.pin-words{font-family:'Bebas Neue',sans-serif;font-size:clamp(58px,10vw,142px);line-height:.92;text-align:center;padding:0 40px;}
+.pw{display:inline;color:rgba(244,244,237,.1);transition:color .08s;}
+.pw.active{color:var(--ow);}
+.pw.lime.active{color:var(--lm);}
+/* ABOUT */
+#about{background:var(--dk);padding:60px 60px 160px;position:relative;overflow:hidden;}
+.sec-eyebrow{font-size:.58rem;letter-spacing:.38em;text-transform:uppercase;color:var(--lm);margin-bottom:48px;display:flex;align-items:center;gap:18px;}
+.sec-eyebrow::after{content:'';width:70px;height:1px;background:var(--lm);}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,118px);line-height:.88;margin-bottom:80px;}
+.sec-h .it{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:.68em;}
+.sec-h .lm{color:var(--lm);}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+.story p{font-family:'Playfair Display',serif;font-size:19px;line-height:1.72;color:rgba(244,244,237,.72);margin-bottom:22px;}
+.story strong{color:var(--ow);}
+.story .hl{color:var(--lm);font-style:italic;}
+.p-card{background:rgba(244,244,237,.03);border:1px solid rgba(244,244,237,.07);padding:28px 32px;}
+.p-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(244,244,237,.05);font-size:.75rem;}
+.p-row:last-child{border-bottom:none;}
+.pk{color:rgba(244,244,237,.3);font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;}
+.pv{color:var(--ow);font-family:'Playfair Display',serif;font-size:14px;}
+.live-dot{display:inline-block;width:6px;height:6px;background:#4caf7c;border-radius:50%;margin-right:6px;animation:pls 2s infinite;}
+@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(76,175,124,.5);}50%{box-shadow:0 0 0 5px rgba(76,175,124,0);}}
+/* ACCA CARD */
+.acca-card{background:rgba(210,255,0,.03);border:1px solid rgba(210,255,0,.18);padding:32px;margin-top:2px;position:relative;overflow:hidden;}
+.acca-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--lm);}
+.acca-card::after{content:'ACCA';font-family:'Bebas Neue',sans-serif;font-size:130px;color:rgba(210,255,0,.03);position:absolute;right:-8px;bottom:-18px;line-height:1;pointer-events:none;}
+.acca-top{display:flex;align-items:center;gap:14px;margin-bottom:22px;}
+.acca-logo-badge{background:var(--lm);padding:5px 11px;border-radius:3px;font-family:'Arial Black',sans-serif;font-size:13px;font-weight:900;color:var(--dk);letter-spacing:.06em;flex-shrink:0;}
+.acca-top-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.3em;color:var(--lm);}
+.acca-top-sub{font-size:.52rem;color:rgba(244,244,237,.28);letter-spacing:.1em;margin-top:2px;}
+.acca-mid{display:flex;align-items:center;gap:24px;margin-bottom:20px;}
+.acca-ring-wrap{position:relative;width:88px;height:88px;flex-shrink:0;}
+.acca-ring-svg{transform:rotate(-90deg);}
+.acca-ring-bg{fill:none;stroke:rgba(210,255,0,.1);stroke-width:6;}
+.acca-ring-fill{fill:none;stroke:var(--lm);stroke-width:6;stroke-linecap:round;stroke-dasharray:226;stroke-dashoffset:226;transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1) .4s;}
+.acca-ring-fill.go{stroke-dashoffset:122;}
+.acca-ring-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--lm);}
+.acca-big-n{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--lm);line-height:1;}
+.acca-big-n small{font-size:14px;color:rgba(244,244,237,.28);font-family:'DM Sans',sans-serif;font-weight:300;}
+.acca-status-row{margin-top:8px;display:flex;flex-direction:column;gap:5px;}
+.acca-si{font-size:.6rem;color:rgba(244,244,237,.5);letter-spacing:.04em;display:flex;align-items:center;gap:6px;}
+.badge{font-size:.5rem;padding:2px 7px;border-radius:2px;font-weight:600;letter-spacing:.1em;}
+.b-done{background:rgba(210,255,0,.15);color:var(--lm);border:1px solid rgba(210,255,0,.3);}
+.b-sat{background:rgba(255,200,0,.12);color:#ffc840;border:1px solid rgba(255,200,0,.3);}
+.b-next{background:rgba(255,170,68,.12);color:#ffaa44;border:1px solid rgba(255,170,68,.3);}
+.acca-papers-lbl{font-size:.52rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(244,244,237,.25);margin-bottom:8px;}
+.acca-papers{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.ap{padding:6px 0;text-align:center;font-size:.52rem;letter-spacing:.04em;background:rgba(244,244,237,.03);border:1px solid rgba(244,244,237,.06);color:rgba(244,244,237,.25);transform:scale(.85);opacity:0;transition:transform .4s,opacity .4s,background .3s,border-color .3s,color .3s;}
+.ap.in{transform:scale(1);opacity:1;}
+.ap.done{background:rgba(210,255,0,.08);border-color:rgba(210,255,0,.22);color:rgba(210,255,0,.7);}
+.ap.fm-pass{background:rgba(210,255,0,.15);border-color:rgba(210,255,0,.5);color:var(--lm);font-weight:600;}
+.ap.nxt{background:rgba(255,170,68,.1);border-color:rgba(255,170,68,.35);color:#ffaa44;}
+.acca-next-note{margin-top:10px;font-size:.58rem;color:rgba(255,170,68,.75);letter-spacing:.06em;display:flex;align-items:center;gap:7px;}
+.acca-next-note::before{content:'→';color:#ffaa44;}
+/* EDU */
+.edu-wrap{margin-top:44px;display:flex;flex-direction:column;}
+.edu-item{display:flex;gap:20px;padding-bottom:26px;border-left:1px solid rgba(210,255,0,.18);padding-left:22px;margin-left:5px;position:relative;}
+.edu-item::before{content:'';position:absolute;left:-5px;top:5px;width:9px;height:9px;border:2px solid var(--lm);border-radius:50%;background:var(--dk);}
+.e-school{font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lm);margin-bottom:4px;}
+.e-deg{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;margin-bottom:3px;}
+.e-meta{font-size:.62rem;color:rgba(244,244,237,.32);margin-bottom:5px;}
+.e-gr{font-size:.62rem;color:rgba(244,244,237,.42);line-height:1.7;}
+/* H-SCROLL */
+#h-scroll-section{background:var(--dk2);overflow:hidden;padding:0;}
+.h-scroll-track{display:flex;align-items:center;padding:50px 0;white-space:nowrap;will-change:transform;}
+.h-scroll-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(70px,11vw,150px);line-height:1;padding-right:60px;color:rgba(244,244,237,.05);flex-shrink:0;}
+.h-scroll-text.lm-t{color:rgba(210,255,0,.12);}
+/* EXPERIENCE */
+#experience{background:var(--dk);padding:160px 60px;position:relative;overflow:hidden;}
+.exp-list{display:flex;flex-direction:column;gap:2px;margin-top:80px;}
+.exp-card{background:rgba(244,244,237,.02);border:1px solid rgba(244,244,237,.06);overflow:hidden;transition:border-color .35s;transform:translateX(-80px);opacity:0;}
+.exp-card.current{border-left:2px solid var(--lm);}
+.exp-card:hover{border-color:rgba(210,255,0,.25);}
+.exp-hd{display:flex;justify-content:space-between;align-items:flex-start;padding:30px 38px;gap:24px;cursor:none;}
+.exp-co{font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lm);margin-bottom:6px;}
+.exp-co span{color:rgba(244,244,237,.28);margin-left:8px;}
+.exp-role{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.02em;line-height:1.05;margin-bottom:4px;}
+.exp-period{font-size:.62rem;color:rgba(244,244,237,.28);}
+.curr-tag{background:rgba(76,175,124,.1);border:1px solid rgba(76,175,124,.25);color:#4caf7c;font-size:.52rem;padding:2px 8px;margin-left:10px;letter-spacing:.15em;text-transform:uppercase;}
+.exp-plus{width:36px;height:36px;border:1px solid rgba(244,244,237,.12);background:none;color:var(--lm);font-size:22px;cursor:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .4s cubic-bezier(.77,0,.175,1),background .3s;}
+.exp-card.open .exp-plus{transform:rotate(45deg);background:rgba(210,255,0,.1);}
+.exp-body{max-height:0;overflow:hidden;transition:max-height .65s cubic-bezier(.4,0,.2,1);}
+.exp-card.open .exp-body{max-height:380px;}
+.exp-bi{padding:0 38px 32px;border-top:1px solid rgba(244,244,237,.05);padding-top:22px;}
+.exp-bi ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.exp-bi ul li{display:flex;gap:14px;font-size:.75rem;color:rgba(244,244,237,.5);line-height:1.75;}
+.exp-bi ul li::before{content:'—';color:var(--lm);flex-shrink:0;}
+/* QUOTE */
+#quote{background:var(--cr);padding:140px 60px;position:relative;overflow:hidden;}
+.q-svg{position:absolute;inset:0;width:100%;height:100%;opacity:.14;pointer-events:none;}
+.q-tag{font-size:.56rem;letter-spacing:.38em;text-transform:uppercase;color:rgba(30,33,24,.38);margin-bottom:40px;}
+.q-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,7.5vw,106px);line-height:.9;color:var(--dk);max-width:920px;}
+.q-text .ql{color:var(--lm);}
+.q-text .qs{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:.68em;}
+.sig-svg path{stroke-dasharray:900;stroke-dashoffset:900;transition:stroke-dashoffset 2s cubic-bezier(.4,0,.2,1) .3s;}
+.sig-svg.draw path{stroke-dashoffset:0;}
+.q-src{font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;color:rgba(30,33,24,.32);margin-top:14px;}
+/* PROJECTS */
+#projects{background:var(--dk);padding:160px 60px;position:relative;overflow:hidden;}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:80px;}
+.proj-card{background:rgba(244,244,237,.025);border:1px solid rgba(244,244,237,.06);padding:50px 44px;position:relative;overflow:hidden;cursor:none;transition:border-color .35s;transform:translateY(70px);opacity:0;}
+.proj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--lm);transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.77,0,.175,1);}
+.proj-card:hover::before{transform:scaleX(1);}
+.proj-card:hover{border-color:rgba(210,255,0,.2);}
+.proj-num{font-family:'Bebas Neue',sans-serif;font-size:110px;font-style:italic;color:rgba(210,255,0,.055);position:absolute;top:5px;right:18px;line-height:1;pointer-events:none;}
+.p-tag{font-size:.56rem;letter-spacing:.25em;text-transform:uppercase;color:var(--lm);margin-bottom:14px;}
+.p-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.02em;margin-bottom:5px;line-height:1.1;}
+.p-sub{font-family:'Playfair Display',serif;font-style:italic;font-size:13px;color:rgba(244,244,237,.32);margin-bottom:18px;}
+.p-desc{font-size:.75rem;line-height:1.88;color:rgba(244,244,237,.48);margin-bottom:22px;}
+.p-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:24px;}
+.p-pill{font-size:.52rem;letter-spacing:.12em;padding:4px 10px;border:1px solid rgba(210,255,0,.18);color:rgba(244,244,237,.42);text-transform:uppercase;}
+.p-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.p-link{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--lm);text-decoration:none;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border:1px solid rgba(210,255,0,.2);transition:gap .3s,background .3s,border-color .3s;}
+.p-link:hover{gap:13px;background:rgba(210,255,0,.07);border-color:rgba(210,255,0,.4);}
+/* SKILLS */
+#skills{background:var(--cr);padding:160px 60px;position:relative;overflow:hidden;}
+#skills .sec-eyebrow{color:rgba(30,33,24,.38);}
+#skills .sec-eyebrow::after{background:rgba(30,33,24,.3);}
+#skills .sec-h{color:var(--dk);}
+.sk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.sk-col{background:rgba(30,33,24,.05);border:1px solid rgba(30,33,24,.08);padding:34px 30px;transform:translateY(50px);opacity:0;}
+.sk-title{font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(30,33,24,.38);margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid rgba(30,33,24,.1);}
+.sk-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(30,33,24,.05);font-size:.75rem;color:rgba(30,33,24,.65);}
+.sk-row:last-child{border-bottom:none;}
+.dots{display:flex;gap:3px;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(30,33,24,.15);}
+.dot.on{background:var(--dk);}
+.sys-strip{display:flex;gap:2px;flex-wrap:wrap;margin-top:2px;}
+.sys-t{flex:1;min-width:110px;background:rgba(30,33,24,.05);border:1px solid rgba(30,33,24,.08);padding:15px 18px;font-size:.7rem;color:rgba(30,33,24,.55);text-align:center;cursor:none;transform:translateY(30px);opacity:0;transition:background .3s,color .3s,transform .6s,opacity .6s;}
+.sys-t.in{transform:translateY(0);opacity:1;}
+.sys-t:hover{background:var(--dk);color:var(--lm);}
+/* CONTACT */
+#contact{background:var(--dk2);padding:160px 60px;position:relative;overflow:hidden;}
+.c-giant{font-family:'Bebas Neue',sans-serif;font-size:clamp(66px,12vw,170px);line-height:.85;letter-spacing:.01em;margin-bottom:56px;}
+.c-giant .lm{color:var(--lm);}
+.c-giant .it{font-family:'Playfair Display',serif;font-style:italic;font-weight:400;font-size:.54em;}
+.c-note{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:rgba(244,244,237,.38);}
+.c-cards{display:flex;gap:2px;flex-wrap:wrap;margin-top:56px;}
+.c-card{flex:1;min-width:200px;padding:34px 30px;border:1px solid rgba(244,244,237,.07);background:rgba(244,244,237,.025);text-decoration:none;display:flex;flex-direction:column;gap:9px;transition:border-color .3s,background .3s,transform .35s;cursor:none;}
+.c-card:hover{border-color:rgba(210,255,0,.4);background:rgba(210,255,0,.05);transform:translateY(-5px);}
+.c-ico{font-size:18px;}
+.c-lbl{font-size:.55rem;letter-spacing:.26em;text-transform:uppercase;color:rgba(244,244,237,.28);}
+.c-val{font-family:'Playfair Display',serif;font-size:15px;color:var(--ow);}
+/* FOOTER */
+footer{background:var(--dk);border-top:1px solid rgba(244,244,237,.07);padding:26px 60px;display:flex;justify-content:space-between;align-items:center;font-size:.58rem;letter-spacing:.1em;color:rgba(244,244,237,.2);}
+footer span{color:var(--lm);}
+/* UTILS */
+.r-up{opacity:0;transform:translateY(55px);}
+.r-left{opacity:0;transform:translateX(-55px);}
+.r-right{opacity:0;transform:translateX(55px);}
+@media(max-width:900px){
+  nav,nav.bg{padding-left:24px;padding-right:24px;}
+  .nav-overlay{padding-left:30px;padding-right:30px;}
+  .ov-meta{right:30px;}
+  #hero .hero-inner,#about,#experience,#projects,#skills,#contact,footer{padding-left:24px!important;padding-right:24px!important;}
+  .about-grid,.proj-grid,.sk-grid{grid-template-columns:1fr;}
+  .hero-stats{right:24px;bottom:56px;}
+  .acca-papers{grid-template-columns:repeat(4,1fr);}
+  .ov-links li{font-size:clamp(38px,9vw,64px);}
+}
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="pre-num" id="preNum">0</div>
+  <div class="pre-bar-wrap"><div class="pre-bar" id="preBar"></div></div>
+  <div class="pre-name">PIYUSH KADAM — FINANCE</div>
+</div>
+<div class="prog" id="prog"></div>
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- OVERLAY NAV -->
+<div class="nav-overlay" id="navOverlay">
+  <svg class="ov-bg-svg" viewBox="0 0 1440 900" fill="none">
+    <path d="M-100 220 C300 90,700 380,1200 200 S1600 60,1800 220" stroke="#d2ff00" stroke-width="1.5" fill="none"/>
+    <path d="M-100 500 C200 370,700 620,1100 480 S1500 340,1800 500" stroke="#d2ff00" stroke-width="1.2" fill="none"/>
+    <path d="M-100 760 C300 620,800 860,1200 700 S1600 560,1800 760" stroke="#d2ff00" stroke-width="1" fill="none"/>
+  </svg>
+  <ul class="ov-links">
+    <li><a href="#about"      onclick="closeNav()">Profi<em>le</em></a></li>
+    <li><a href="#experience" onclick="closeNav()">Experien<em>ce</em></a></li>
+    <li><a href="#projects"   onclick="closeNav()">Projec<em>ts</em></a></li>
+    <li><a href="#skills"     onclick="closeNav()">Ski<em>lls</em></a></li>
+    <li><a href="#contact"    onclick="closeNav()">Conta<em>ct</em></a></li>
+  </ul>
+  <div class="ov-meta">
+    <div style="margin-bottom:12px;font-size:.52rem;color:rgba(244,244,237,.18);letter-spacing:.28em;">REACH OUT</div>
+    <a href="mailto:piyushkadam700@gmail.com">piyushkadam700@gmail.com</a>
+    <a href="https://www.linkedin.com/in/piyush-kadam-879074249" target="_blank">LinkedIn →</a>
+    <div style="margin-top:16px;color:rgba(244,244,237,.15);">Bristol, UK · Part-Qualified ACCA</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="nav-logo"><span>PIYUSH</span><span>KADAM</span></a>
+  <div class="nav-r">
+    <a href="#contact" class="pill-btn">Open to Opportunities</a>
+    <button class="ham" id="hamBtn" onclick="toggleNav()">
+      <div class="hl"></div><div class="hl"></div><div class="hl"></div>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" preserveAspectRatio="xMidYMid slice">
+    <path d="M-80 280 C240 140,600 440,960 270 S1340 100,1600 280" stroke="#d2ff00" stroke-width="1.5" fill="none" opacity=".14"/>
+    <path d="M-80 560 C300 420,700 680,1100 510 S1450 370,1600 560" stroke="#d2ff00" stroke-width="1.2" fill="none" opacity=".09"/>
+    <path d="M-80 800 C200 660,700 880,1100 740 S1500 580,1600 800" stroke="#d2ff00" stroke-width="1" fill="none" opacity=".06"/>
+    <circle cx="1160" cy="190" r="230" stroke="#d2ff00" stroke-width="1" fill="none" opacity=".04"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span>// Finance Professional &nbsp;·&nbsp; Bristol, UK &nbsp;·&nbsp; Part-Qualified ACCA</span></div>
+    <h1 class="hero-h1">
+      <span class="split-line"><span class="split-inner" id="hw0">PIYUSH</span></span>
+      <span class="split-line"><span class="split-inner" id="hw1">KA<span class="accent">DAM</span></span></span>
+    </h1>
+    <p class="hero-tagline">
+      <span class="split-line"><span class="split-inner" id="hw2">Finance Professional &amp; Financial Modeller</span></span>
+    </p>
+    <p class="hero-bio" id="heroBio">Finance Assistant with hands-on experience across multi-entity AP operations, month-end close, and balance sheet reconciliations in NetSuite. Building IB-grade financial models alongside — targeting corporate finance and private equity.</p>
+    <div class="hero-cta" id="heroCta">
+      <a href="#experience" class="mag-btn primary" data-mag>View Experience ↓</a>
+      <a href="#contact" class="mag-btn ghost" data-mag>Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats" id="heroStats">
+    <div class="s-box"><div class="s-n" data-count="3">0</div><div class="s-l">Years Experience</div></div>
+    <div class="s-box"><div class="s-n">6<small style="font-size:18px;color:rgba(244,244,237,.28);font-family:'DM Sans',sans-serif">/13</small></div><div class="s-l">ACCA Papers</div></div>
+    <div class="s-box"><div class="s-n" data-count="4">0</div><div class="s-l">ERP Systems</div></div>
+    <div class="s-box"><div class="s-n">£400K</div><div class="s-l">Monthly AP</div></div>
+  </div>
+  <div class="scroll-hint" id="scrollHint"><div class="s-line"></div>Scroll to explore</div>
+</section>
+
+<!-- MARQUEE 1 -->
+<div class="mq-wrap">
+  <div class="mq-track">
+    <span class="mq-item on">PIYUSH KADAM</span><span class="mq-item">FINANCE PROFESSIONAL</span><span class="mq-item">NETSUITE</span><span class="mq-item">ACCA PART-QUALIFIED</span><span class="mq-item">BRISTOL UK</span><span class="mq-item on">FINANCIAL MODELLING</span><span class="mq-item">ACCOUNTS PAYABLE</span><span class="mq-item">DCF · LBO · DDM</span><span class="mq-item">OPEN TO OPPORTUNITIES</span><span class="mq-item">MSC SURREY — MERIT</span>
+    <span class="mq-item on">PIYUSH KADAM</span><span class="mq-item">FINANCE PROFESSIONAL</span><span class="mq-item">NETSUITE</span><span class="mq-item">ACCA PART-QUALIFIED</span><span class="mq-item">BRISTOL UK</span><span class="mq-item on">FINANCIAL MODELLING</span><span class="mq-item">ACCOUNTS PAYABLE</span><span class="mq-item">DCF · LBO · DDM</span><span class="mq-item">OPEN TO OPPORTUNITIES</span><span class="mq-item">MSC SURREY — MERIT</span>
+  </div>
+</div>
+
+<!-- SCROLL-PINNED GIANT TEXT -->
+<div id="pin-text">
+  <div class="pin-sticky">
+    <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" opacity=".07">
+      <path d="M-80 400 C360 200,860 680,1340 380 S1700 160,1800 400" stroke="#d2ff00" stroke-width="2" fill="none"/>
+    </svg>
+    <div class="pin-words" id="pinWords"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" opacity=".09">
+    <path d="M-80 300 C300 140,800 460,1300 240 S1700 80,1800 300" stroke="#d2ff00" stroke-width="1.5" fill="none"/>
+    <path d="M-80 700 C200 560,800 840,1300 660 S1700 500,1800 700" stroke="#d2ff00" stroke-width="1" fill="none"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="sec-eyebrow r-up">01 // Candidate Profile</div>
+    <div class="sec-h r-up">
+      <span class="split-line"><span class="split-inner">THE</span></span><br>
+      <span class="split-line"><span class="split-inner lm">STORY</span></span><br>
+      <span class="split-line"><span class="split-inner it">So Far</span></span>
+    </div>
+    <div class="about-grid">
+      <div class="story r-left">
+        <p>Finance professional combining <strong>strong technical accuracy</strong> with analytical capability, supporting multi-entity operations across the UK and Europe.</p>
+        <p>Currently embedded in a NetSuite-led environment at <strong>Edyn Ltd</strong>, responsible for end-to-end AP, month-end close, and balance sheet reconciliations across multiple currencies.</p>
+        <p>Recognised for <strong>process improvement initiatives</strong> and cross-functional collaboration. MSc Accounting &amp; Finance (Merit) from Surrey, BCom 8.84/10 from Mumbai University.</p>
+        <p style="font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:rgba(244,244,237,.42);margin-top:6px;">Driven by a commitment to progressing through ACCA while applying learnings directly in practice.</p>
+        <div class="edu-wrap">
+          <div class="edu-item"><div>
+            <div class="e-school">University of Surrey</div>
+            <div class="e-deg">MSc Accounting &amp; Finance</div>
+            <div class="e-meta">Feb 2023 – May 2024 · Merit</div>
+            <div class="e-gr">Derivatives: 79% · Ethics: 76% · Auditing: 70%</div>
+          </div></div>
+          <div class="edu-item"><div>
+            <div class="e-school">Joshi Bedekar College, Mumbai University</div>
+            <div class="e-deg">BCom Accounting &amp; Finance</div>
+            <div class="e-meta">Jun 2019 – Mar 2022 · 8.84 / 10</div>
+            <div class="e-gr">Financial Management: 84% · Economics: 93%</div>
+          </div></div>
+        </div>
+      </div>
+      <div class="r-right" style="display:flex;flex-direction:column;gap:2px;">
+        <div class="p-card">
+          <div class="p-row"><span class="pk">Current Role</span><span class="pv">Finance Assistant, Edyn Ltd</span></div>
+          <div class="p-row"><span class="pk">Location</span><span class="pv">Bristol, UK</span></div>
+          <div class="p-row"><span class="pk">Education</span><span class="pv">MSc Acc &amp; Finance — Surrey (Merit)</span></div>
+          <div class="p-row"><span class="pk">ACCA Status</span><span class="pv">Part-Qualified — FR Passed, FM Awaiting</span></div>
+          <div class="p-row"><span class="pk">Key Systems</span><span class="pv">NetSuite · MRI · Yardi · Xero</span></div>
+          <div class="p-row"><span class="pk">Status</span><span class="pv"><span class="live-dot"></span>Open to Opportunities</span></div>
+        </div>
+        <!-- ACCA CARD -->
+        <div class="acca-card">
+          <div class="acca-top">
+            <div class="acca-logo-badge">ACCA</div>
+            <div>
+              <div class="acca-top-title">Qualification Progress</div>
+              <div class="acca-top-sub">Association of Chartered Certified Accountants</div>
+            </div>
+          </div>
+          <div class="acca-mid">
+            <div class="acca-ring-wrap">
+              <svg class="acca-ring-svg" width="88" height="88" viewBox="0 0 88 88">
+                <circle class="acca-ring-bg" cx="44" cy="44" r="36"/>
+                <circle class="acca-ring-fill" id="accaRing" cx="44" cy="44" r="36"/>
+              </svg>
+              <div class="acca-ring-num">6/13</div>
+            </div>
+            <div>
+              <div class="acca-big-n">6 <small>/ 13 papers</small></div>
+              <div class="acca-status-row">
+                <div class="acca-si"><span class="badge b-done">✓ PASSED</span>Financial Reporting (FR)</div>
+                <div class="acca-si"><span class="badge b-sat">⏳ AWAITING</span>Financial Management (FM) — sat March</div>
+                <div class="acca-si"><span class="badge b-next">→ NEXT</span>Audit &amp; Assurance (AA) — June</div>
+              </div>
+            </div>
+          </div>
+          <div class="acca-next-note">Next sitting: Audit &amp; Assurance (AA) — June</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE 2 -->
+<div class="mq-wrap light">
+  <div class="mq-track" style="animation-direction:reverse;animation-duration:20s;">
+    <span class="mq-item on">EDYN LTD</span><span class="mq-item">WORKMAN LLP</span><span class="mq-item">GURU ACCOUNTANCY</span><span class="mq-item on">HDFC BANK</span><span class="mq-item">AP OPERATIONS</span><span class="mq-item">MONTH-END CLOSE</span><span class="mq-item on">MULTI-CURRENCY</span><span class="mq-item">£400K MONTHLY AP</span><span class="mq-item">200+ INVOICES</span><span class="mq-item">PROCESS AUTOMATION</span>
+    <span class="mq-item on">EDYN LTD</span><span class="mq-item">WORKMAN LLP</span><span class="mq-item">GURU ACCOUNTANCY</span><span class="mq-item on">HDFC BANK</span><span class="mq-item">AP OPERATIONS</span><span class="mq-item">MONTH-END CLOSE</span><span class="mq-item on">MULTI-CURRENCY</span><span class="mq-item">£400K MONTHLY AP</span><span class="mq-item">200+ INVOICES</span><span class="mq-item">PROCESS AUTOMATION</span>
+  </div>
+</div>
+
+<!-- H-SCROLL BANNER -->
+<div id="h-scroll-section">
+  <div class="h-scroll-track" id="hScrollTrack">
+    <div class="h-scroll-text">FINANCE</div><div class="h-scroll-text lm-t">MODELLING</div>
+    <div class="h-scroll-text">AP OPERATIONS</div><div class="h-scroll-text lm-t">ACCA</div>
+    <div class="h-scroll-text">CORPORATE FINANCE</div><div class="h-scroll-text lm-t">PRIVATE EQUITY</div>
+    <div class="h-scroll-text">BRISTOL UK</div><div class="h-scroll-text lm-t">NETSUITE</div>
+    <div class="h-scroll-text">FINANCE</div><div class="h-scroll-text lm-t">MODELLING</div>
+    <div class="h-scroll-text">AP OPERATIONS</div><div class="h-scroll-text lm-t">ACCA</div>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" opacity=".08">
+    <path d="M1600 280 C1200 140,700 440,200 260 S-200 90,-300 280" stroke="#d2ff00" stroke-width="1.5" fill="none"/>
+    <path d="M1600 680 C1100 520,600 800,100 620 S-300 460,-400 680" stroke="#d2ff00" stroke-width="1" fill="none"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="sec-eyebrow r-up">02 // Employment History</div>
+    <div class="sec-h r-up">WORK<br><span class="it">Experience</span></div>
+    <p class="r-up" style="font-family:'Playfair Display',serif;font-style:italic;font-size:18px;color:rgba(244,244,237,.38);max-width:500px;margin-bottom:80px;">Every role a chapter — from Mumbai to Bristol, building depth across finance operations, systems, and strategy.</p>
+    <div class="exp-list">
+      <div class="exp-card current" id="ec1">
+        <div class="exp-hd" onclick="toggleExp('ec1')"><div><div class="exp-co">Edyn Ltd <span>· Bristol, UK</span></div><div class="exp-role">Finance Assistant</div><div class="exp-period">Jan 2026 – Present<span class="curr-tag">● Current</span></div></div><button class="exp-plus">+</button></div>
+        <div class="exp-body"><div class="exp-bi"><ul>
+          <li>End-to-end AP for multiple UK &amp; European entities in NetSuite, processing high-volume invoices</li>
+          <li>Multi-currency payment runs ensuring compliance with internal controls and approval policies</li>
+          <li>Month-end close: invoice cut-off, accruals, balance sheet reconciliations</li>
+          <li>AP process improvement and automation initiatives within the procure-to-pay cycle</li>
+        </ul></div></div>
+      </div>
+      <div class="exp-card" id="ec2">
+        <div class="exp-hd" onclick="toggleExp('ec2')"><div><div class="exp-co">Workman LLP <span>· Bristol, UK</span></div><div class="exp-role">AP — Business Rates</div><div class="exp-period">Dec 2024 – Jan 2026</div></div><button class="exp-plus">+</button></div>
+        <div class="exp-body"><div class="exp-bi"><ul>
+          <li>Managed high-volume AP for 100+ commercial properties; accurate VAT coding under UK regulations</li>
+          <li>Processed and reconciled 200+ invoices monthly using TRAMPS, MRI, and Yardi</li>
+          <li>Handled £300K–£400K monthly in council credits &amp; supplier refunds with accurate reconciliation</li>
+          <li>Supported month-end reporting, audit preparation, and council liaison</li>
+        </ul></div></div>
+      </div>
+      <div class="exp-card" id="ec3">
+        <div class="exp-hd" onclick="toggleExp('ec3')"><div><div class="exp-co">Guru Accountancy Ltd. <span>· Dartford, London</span></div><div class="exp-role">Bookkeeping Intern</div><div class="exp-period">Aug 2024 – Oct 2024</div></div><button class="exp-plus">+</button></div>
+        <div class="exp-body"><div class="exp-bi"><ul>
+          <li>Processed 100+ invoices; monthly bank &amp; supplier reconciliations in Xero</li>
+          <li>Assisted in preparing financial statements and client reports for small retail clients</li>
+        </ul></div></div>
+      </div>
+      <div class="exp-card" id="ec4">
+        <div class="exp-hd" onclick="toggleExp('ec4')"><div><div class="exp-co">HDFC Bank <span>· Thane, India</span></div><div class="exp-role">Bank Teller</div><div class="exp-period">Sep 2022 – Dec 2022</div></div><button class="exp-plus">+</button></div>
+        <div class="exp-body"><div class="exp-bi"><ul>
+          <li>High-volume daily transactions via Oracle with full accuracy and compliance accountability</li>
+          <li>Branch reporting, account reconciliation, and practical knowledge of financial controls</li>
+        </ul></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section id="quote">
+  <svg class="q-svg" viewBox="0 0 1440 700" fill="none">
+    <path d="M-80 140 C300 40,760 300,1200 140 S1600 20,1800 140" stroke="#1e2118" stroke-width="2" fill="none"/>
+    <path d="M-80 420 C200 300,760 580,1200 420 S1600 280,1800 420" stroke="#1e2118" stroke-width="1.5" fill="none"/>
+    <path d="M-80 640 C400 500,900 760,1400 620 S1700 480,1800 640" stroke="#1e2118" stroke-width="1" fill="none"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="q-tag r-up">// Philosophy</div>
+    <div class="q-text r-up">IT DOESN'T<br>MATTER WHERE<br>YOU <span class="ql">START,</span> IT'S<br>HOW YOU <span class="qs">Progress</span><br>FROM THERE.</div>
+    <div class="r-up" style="margin-top:32px;">
+      <svg class="sig-svg" id="sigSvg" width="220" height="80" viewBox="0 0 220 80" fill="none">
+        <path d="M10 55 C30 20,55 10,70 30 C80 45,65 65,80 50 C95 35,110 15,130 35 C148 52,135 72,150 60 C165 48,175 30,195 42 C205 50,210 40,218 36" stroke="#1e2118" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="q-src r-up">— Piyush Kadam · Mumbai to Bristol</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" opacity=".08">
+    <path d="M-80 240 C380 100,880 440,1380 220 S1720 60,1800 240" stroke="#d2ff00" stroke-width="1.5" fill="none"/>
+    <path d="M-80 720 C280 560,880 880,1380 700 S1720 520,1800 720" stroke="#d2ff00" stroke-width="1" fill="none"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="sec-eyebrow r-up">03 // Selected Work · Academic &amp; Professional</div>
+    <div class="sec-h r-up">PROJECTS &amp;<br><span class="it">Case Studies</span></div>
+    <div class="proj-grid">
+      <div class="proj-card" id="pc1">
+        <div class="proj-num">01</div>
+        <div class="p-tag">Financial Analysis · Equity Research · Valuation</div>
+        <h3 class="p-title">Tesco plc — Equity Research</h3>
+        <p class="p-sub">Lead Financial Analyst · University of Surrey MSc · March 2024</p>
+        <p class="p-desc">Comprehensive financial analysis and valuation of Tesco plc (LSE: TSCO). Applied DDM, DCF/FCFE &amp; DCF/FCFF — deriving a blended <strong style="color:var(--lm)">BUY target of 374p</strong> vs ~280p market price (~34% upside). Full IB-format equity research report with WACC derivation (7.11%), 47-month beta regression, and scenario analysis.</p>
+        <div class="p-pills"><span class="p-pill">Advanced Excel</span><span class="p-pill">ORBIS</span><span class="p-pill">DDM</span><span class="p-pill">DCF/FCFE</span><span class="p-pill">DCF/FCFF</span><span class="p-pill">WACC</span><span class="p-pill">Beta Regression</span><span class="p-pill">Equity Research</span></div>
+        <div class="p-btns">
+          <a href="TESCO_EQUITY_RESEARCH_FINAL-.pdf" class="p-link" target="_blank">📄 Equity Report &nbsp;→</a>
+          <a href="https://docs.google.com/spreadsheets/d/1enz5z3mJz92y_q-RtcersUwTwSd7tibc/edit?usp=sharing" class="p-link" target="_blank">📊 Valuation Model &nbsp;→</a>
+        </div>
+      </div>
+      <div class="proj-card" id="pc2">
+        <div class="proj-num">02</div>
+        <div class="p-tag">Leveraged Buyout · Private Equity · Modelling</div>
+        <h3 class="p-title">LBO Financial Model</h3>
+        <p class="p-sub">Independent Academic Project</p>
+        <p class="p-desc">Full leveraged buyout model reflecting IB-grade methodology. Structured debt tranches, modelled amortisation schedules, IRR and MoM returns analysis — demonstrating deep understanding of PE deal mechanics, capital structure optimisation, and sponsor return analysis.</p>
+        <div class="p-pills"><span class="p-pill">LBO Modelling</span><span class="p-pill">Debt Structuring</span><span class="p-pill">IRR Analysis</span><span class="p-pill">MoM Returns</span><span class="p-pill">Amortisation</span><span class="p-pill">Excel</span></div>
+        <div class="p-btns">
+          <a href="https://docs.google.com/spreadsheets/d/11ynddcsBmZ-KNpETf2k2PXd_0X_xAHDf/edit?usp=sharing" class="p-link" target="_blank">📊 LBO Model (Excel) &nbsp;→</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <svg class="q-svg" viewBox="0 0 1440 700" fill="none" opacity=".12">
+    <path d="M-80 180 C300 60,800 340,1300 160 S1700 30,1800 180" stroke="#1e2118" stroke-width="1.5" fill="none"/>
+    <path d="M-80 520 C200 380,780 660,1300 500 S1700 340,1800 520" stroke="#1e2118" stroke-width="1" fill="none"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="sec-eyebrow r-up">04 // Capabilities</div>
+    <div class="sec-h r-up" style="color:var(--dk);">SKILLS &amp;<br><span class="it" style="color:var(--dk);">Expertise</span></div>
+    <div class="sk-grid">
+      <div class="sk-col"><div class="sk-title">// Financial Modelling</div>
+        <div class="sk-row">DCF / FCFE / FCFF <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">LBO Modelling <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">DDM Valuation <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">Equity Research <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">WACC Analysis <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+      </div>
+      <div class="sk-col"><div class="sk-title">// Finance Operations</div>
+        <div class="sk-row">Accounts Payable <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></div>
+        <div class="sk-row">Month-End Close <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">BS Reconciliations <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">Multi-Currency AP <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">VAT Compliance UK <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+      </div>
+      <div class="sk-col"><div class="sk-title">// Technical</div>
+        <div class="sk-row">Advanced Excel <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></div>
+        <div class="sk-row">ORBIS Database <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+        <div class="sk-row">Financial Reporting <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+        <div class="sk-row">Audit Preparation <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+        <div class="sk-row">Process Improvement <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+      </div>
+    </div>
+    <div style="margin-top:2px;">
+      <div style="padding:18px 0 10px;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:rgba(30,33,24,.35);">// ERP &amp; Systems</div>
+      <div class="sys-strip">
+        <div class="sys-t">NetSuite</div><div class="sys-t">MRI Software</div><div class="sys-t">Yardi</div>
+        <div class="sys-t">Xero</div><div class="sys-t">TRAMPS</div><div class="sys-t">Oracle</div><div class="sys-t">Excel</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <svg class="bg-svg" viewBox="0 0 1440 900" fill="none" opacity=".1">
+    <path d="M-80 240 C340 80,880 480,1400 240 S1720 60,1800 240" stroke="#d2ff00" stroke-width="1.5" fill="none"/>
+    <path d="M-80 700 C220 540,860 880,1400 700 S1720 520,1800 700" stroke="#d2ff00" stroke-width="1" fill="none"/>
+    <circle cx="240" cy="480" r="320" stroke="#d2ff00" stroke-width="1" fill="none" opacity=".3"/>
+    <circle cx="1300" cy="280" r="220" stroke="#d2ff00" stroke-width="1" fill="none" opacity=".3"/>
+  </svg>
+  <div style="position:relative;z-index:1;">
+    <div class="sec-eyebrow r-up">05 // The Next Chapter</div>
+    <div class="c-giant r-up">LET'S<br>WRITE THE<br><span class="lm">NEXT</span><br><span class="it">Chapter</span></div>
+    <p class="c-note r-up">Open to roles in corporate finance, private equity, and financial analysis. Based in Bristol, UK.</p>
+    <div class="c-cards r-up">
+      <a href="mailto:piyushkadam700@gmail.com" class="c-card"><div class="c-ico">✉</div><div class="c-lbl">Email</div><div class="c-val">piyushkadam700@gmail.com</div></a>
+      <a href="https://www.linkedin.com/in/piyush-kadam-879074249" target="_blank" class="c-card"><div class="c-ico">in</div><div class="c-lbl">LinkedIn</div><div class="c-val">piyush-kadam-879074249</div></a>
+      <a href="tel:+447818316377" class="c-card"><div class="c-ico">📞</div><div class="c-lbl">Phone</div><div class="c-val">+44 7818 316 377</div></a>
+      <a href="#" class="c-card"><div class="c-ico">📍</div><div class="c-lbl">Location</div><div class="c-val">Bristol, United Kingdom</div></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2025 <span>Piyush Kadam</span> · Finance Professional</div>
+  <div>Bristol, UK · Part-Qualified <span>ACCA</span></div>
+  <div>Portfolio <span>V3 Final</span></div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* PRELOADER */
+(function(){
+  const numEl=document.getElementById('preNum'),barEl=document.getElementById('preBar'),pre=document.getElementById('preloader');
+  let c=0;
+  const iv=setInterval(()=>{
+    c+=Math.floor(Math.random()*4)+1; if(c>=100){c=100;clearInterval(iv);}
+    numEl.textContent=c; barEl.style.width=c+'%';
+    if(c===100) setTimeout(()=>gsap.to(pre,{yPercent:-100,duration:1,ease:'power4.inOut',onComplete:()=>{pre.style.display='none';initAll();}}),350);
+  },26);
+})();
+
+/* CURSOR */
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function raf(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(raf);})();
+document.querySelectorAll('a,button,.exp-hd').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+});
+
+/* PROGRESS */
+window.addEventListener('scroll',()=>{const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;document.getElementById('prog').style.width=p+'%';},{passive:true});
+
+/* NAV */
+let navOpen=false;
+function toggleNav(){navOpen=!navOpen;document.getElementById('navOverlay').classList.toggle('open',navOpen);document.getElementById('hamBtn').classList.toggle('open',navOpen);}
+function closeNav(){navOpen=false;document.getElementById('navOverlay').classList.remove('open');document.getElementById('hamBtn').classList.remove('open');}
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('bg',window.scrollY>60),{passive:true});
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});
+});
+
+/* COUNTER */
+function animCount(el,target){let s=null;(function step(ts){if(!s)s=ts;const p=Math.min((ts-s)/1400,1);el.textContent=Math.floor(p*target);if(p<1)requestAnimationFrame(step);else el.textContent=target+'+';})(performance.now());}
+
+/* EXP TOGGLE */
+function toggleExp(id){const c=document.getElementById(id),was=c.classList.contains('open');document.querySelectorAll('.exp-card.open').forEach(x=>x.classList.remove('open'));if(!was)c.classList.add('open');}
+
+/* MAGNETIC BUTTONS */
+document.querySelectorAll('[data-mag]').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{const r=btn.getBoundingClientRect();btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.18}px,${(e.clientY-r.top-r.height/2)*.18}px)`;});
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
+});
+
+/* BUILD PIN TEXT — words light up one by one on scroll */
+const PIN=[
+  {t:'REDEFINING',lime:true},{t:' LIMITS,',lime:false},
+  {t:' FIGHTING',lime:false},{t:' FOR',lime:false},{t:' WINS,',lime:true},
+  {br:true},
+  {t:'BUILDING',lime:false},{t:' A',lime:false},{t:' LEGACY',lime:true},
+  {t:' IN',lime:false},{t:' FINANCE.',lime:false},
+];
+const pinC=document.getElementById('pinWords'),pinS=document.getElementById('pin-text'),wEls=[];
+PIN.forEach(w=>{
+  if(w.br){pinC.appendChild(document.createElement('br'));return;}
+  const s=document.createElement('span');
+  s.className='pw'+(w.lime?' lime':'');
+  s.textContent=w.t;
+  pinC.appendChild(s);
+  wEls.push(s);
+});
+pinS.style.height=(wEls.length*130+window.innerHeight)+'px';
+ScrollTrigger.create({
+  trigger:'#pin-text',start:'top top',end:'bottom bottom',scrub:.6,
+  onUpdate(self){
+    const idx=Math.floor(self.progress*wEls.length);
+    wEls.forEach((el,i)=>el.classList.toggle('active',i<=idx));
+  }
+});
+
+/* H-SCROLL BANNER */
+gsap.to('#hScrollTrack',{
+  x:()=>-(document.getElementById('hScrollTrack').scrollWidth-window.innerWidth)*.5,
+  ease:'none',
+  scrollTrigger:{trigger:'#h-scroll-section',start:'top bottom',end:'bottom top',scrub:2}
+});
+
+/* MAIN INIT */
+function initAll(){
+  /* Hero reveal */
+  ['hw0','hw1','hw2'].forEach((id,i)=>{const el=document.getElementById(id);if(el)gsap.to(el,{translateY:'0%',duration:1.3,ease:'power4.out',delay:.08+i*.15});});
+  gsap.to('#heroBio',{opacity:1,duration:.9,delay:.9});
+  gsap.to('#heroCta',{opacity:1,duration:.9,delay:1.1});
+  gsap.to('#heroStats',{opacity:1,duration:.8,delay:1.4});
+  gsap.to('#scrollHint',{opacity:1,duration:.8,delay:1.8});
+  setTimeout(()=>document.querySelectorAll('[data-count]').forEach(el=>animCount(el,parseInt(el.dataset.count))),1500);
+  setTimeout(()=>document.getElementById('ec1').classList.add('open'),1800);
+
+  /* Scroll triggers */
+  gsap.utils.toArray('.r-up').forEach(el=>gsap.to(el,{opacity:1,y:0,duration:.9,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}}));
+  gsap.utils.toArray('.r-left').forEach(el=>gsap.to(el,{opacity:1,x:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%'}}));
+  gsap.utils.toArray('.r-right').forEach(el=>gsap.to(el,{opacity:1,x:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 86%'}}));
+  document.querySelectorAll('.sec-h .split-inner').forEach((el,i)=>gsap.to(el,{translateY:'0%',duration:1.1,ease:'power4.out',delay:i*.1,scrollTrigger:{trigger:el.closest('.sec-h'),start:'top 88%'}}));
+  document.querySelectorAll('.exp-card').forEach((c,i)=>gsap.to(c,{opacity:1,x:0,duration:.9,ease:'power3.out',delay:i*.1,scrollTrigger:{trigger:c,start:'top 88%'}}));
+  ['pc1','pc2'].forEach((id,i)=>gsap.to('#'+id,{opacity:1,y:0,duration:1,ease:'power3.out',delay:i*.18,scrollTrigger:{trigger:'#projects .proj-grid',start:'top 82%'}}));
+  gsap.utils.toArray('.sk-col').forEach((col,i)=>gsap.to(col,{opacity:1,y:0,duration:.85,ease:'power3.out',delay:i*.14,scrollTrigger:{trigger:'#skills .sk-grid',start:'top 82%'}}));
+  document.querySelectorAll('.sys-t').forEach((el,i)=>ScrollTrigger.create({trigger:el,start:'top 92%',onEnter:()=>setTimeout(()=>el.classList.add('in'),i*70)}));
+
+  /* ACCA ring */
+  ScrollTrigger.create({
+    trigger:'.acca-card',start:'top 82%',
+    onEnter:()=>{
+      setTimeout(()=>{
+        const r=document.getElementById('accaRing');if(r)r.classList.add('go');
+      },200);
+    }
+  });
+
+  /* Signature draw */
+  ScrollTrigger.create({trigger:'#quote',start:'top 70%',onEnter:()=>document.getElementById('sigSvg').classList.add('draw')});
+
+  /* Parallax contours */
+  gsap.utils.toArray('.bg-svg').forEach(el=>gsap.to(el,{y:90,ease:'none',scrollTrigger:{trigger:el.parentElement,start:'top bottom',end:'bottom top',scrub:2}}));
+
+  /* Marquee velocity speed-up */
+  ScrollTrigger.create({
+    trigger:'body',start:'top top',end:'bottom bottom',
+    onUpdate(self){
+      const vel=Math.abs(self.getVelocity())/1000;
+      document.querySelectorAll('.mq-track').forEach(t=>t.style.animationDuration=Math.max(10,28-vel*8)+'s');
+    }
+  });
+}
+</script>
+</body>
+</html>
